@@ -407,6 +407,8 @@ on boot
 # Increased technology maximums should be reflected here.
     write /proc/sys/net/core/rmem_max  2097152
     write /proc/sys/net/core/wmem_max  2097152
+    
+    start semaboot
 
 # Define default initial receive window size in segments.
     setprop net.tcp.default_init_rwnd 60
@@ -455,6 +457,13 @@ on property:sys.sysctl.tcp_def_init_rwnd=*
 
 ## Daemon processes to be run by init.
 ##
+
+# Semaphore boot patch
+service semaboot /sbin/boot-patch.sh
+	user root
+	oneshot
+	disabled
+
 service ueventd /sbin/ueventd
     class core
     critical
