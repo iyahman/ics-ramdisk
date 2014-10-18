@@ -3,16 +3,33 @@
 # to provide their own GPS initialization code without
 # conflicting with the default GPS init. (i.e. Vibrant)
 #
+#service gpslto /system/bin/get-gps-lto
+#    user root
+#    group gps system
 
-service gpsd /system/vendor/bin/gpsd -c /vendor/etc/gps.xml
-    class late_start
-    socket gps seqpacket 0660 gps system
-    user gps
-    group system inet
+#on boot
+#    start gpslto
 
 on post-fs-data
-    # create data/gps for GPS demon
-    mkdir /data/gps 700 gps system
+# +STE GPS Daemon
+# create data/gps for GPS demon
+    chown gps system /dev/s3c2410_serial1
+    chmod 660 /dev/s3c2410_serial1
+    mkdir /data/gps 777 gps system
     chown gps system /data/gps
-    chown gps root /sys/class/sec/gps/GPS_PWR_EN/value
-    chmod 660 /sys/class/sec/gps/GPS_PWR_EN/value
+    chown gps system /sys/class/sec/gps/GPS_PWR_EN/value
+    chmod 664 /sys/class/sec/gps/GPS_PWR_EN/value
+    chown gps system /sys/class/sec/gps/GPS_nRST/value
+    chmod 664 /sys/class/sec/gps/GPS_nRST/value
+    chown gps system /sys/class/gpio/gpio120/value
+    chmod 664 /sys/class/gpio/gpio120/value
+
+#on property:init.svc.wpa_supplicant=running
+#    start gpslto
+
+#on property:init.svc.gpsd=running
+#    start gpslto
+
+on property:dev.bootcomplete=1
+chown gps system /dev/socket/gps
+chmod 660 /dev/socket/gps

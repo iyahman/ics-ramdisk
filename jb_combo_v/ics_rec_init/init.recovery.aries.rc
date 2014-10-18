@@ -10,7 +10,6 @@ on fs
     exec /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
     exec /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
 
-	mount ext4 /dev/lvpool/system /system
 on boot
     write /dev/graphics/fb3 1
 
